@@ -136,4 +136,60 @@ export const  Contentdiv = styled.div `
     height: 40px;
     //margin: 20px 0;
    }
+
+   >.ant-carousel {
+       height: 340px;
+       width: 1200px;
+       margin-left: 210px;
+       >.slick-slider{
+           width: 100%;
+           height:100%;
+           >.slick-list{
+            width: 100%;
+           height:100%;
+           >.slick-track{
+            width: 100%;
+           height:100%;
+           >div{
+            flex-wrap: wrap !important;
+               >div{
+                   display: flex !important;
+                   >div{
+                    flex-wrap: wrap;
+                   }
+               }
+             
+           }
+
+           }
+
+           }
+       }
+   }
+   .ant-carousel .slick-list .slick-slide >div>div {
+       display: flex !important;
+       justify-content: center;
+       align-items: center;
+       >div{
+           margin: 10px 20px 0;
+       }
+   }
+
+
+   }
+   .ant-carousel .slick-dots-bottom{
+       bottom: 0px;
+   }
+   .ant-carousel .slick-dots li {
+    background-color: rgb(165,165,165) ;
+    display: inline-block;
+    height: 11px;
+    width: 11px;
+    border-radius: 50%;
+    .slick-active{
+        background: red !important;
+    }
+
+       
+   }
 `

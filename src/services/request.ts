@@ -3,7 +3,7 @@ import axios from "axios";
 
 const requests = axios.create({
 	baseURL:'http://codercba.com:9002/',
-	timeout:5000
+	//timeout:5000
 })
 /**请求拦截器 */
 requests.interceptors.request.use((config)=>{

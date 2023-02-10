@@ -28,6 +28,25 @@ export const  LoginDiv = styled.div`
     }
 
 }
+.captcha{
+    display: flex;
+    
+    input{
+        height:40px !important;
+        width: 140px !important;
+    }
+
+
+}
+.verification{
+        background: rgb(68,153,255);
+        height:40px !important;
+        margin-left:10px;
+        span{
+        color: white;
+    }
+
+    }
 .login{
     height:40px;
     width: 250px;

@@ -6,8 +6,9 @@ import {Input} from 'antd';
 import {useMount} from 'ahooks';
 import Login from '../Login/index';
 import {useNavigate} from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { infoLogin,Logout } from '../../store/reducer/homeSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {infoLogin, Logout} from '../../store/reducer/homeSlice';
+import {getStorageItems,clearStorageAll} from '../../utils/storageTool'
 
 const {Search} = Input;
 
@@ -25,10 +26,14 @@ const Header = memo(() => {
   /**编程式导航 */
   const navigate = useNavigate();
   /**使用reudex */
-  const isLogin = useSelector((state :any) => state.home.isLogin);
+  const isLogin = useSelector((state: any) => state.home.isLogin);
+  /**获取Redux内用户信息*/
+  const userInfo = useSelector((state: any) => state.home.userInfo);
   /**导入派发方法 */
   const dispatch = useDispatch();
-
+  /**取页面的token */
+  let userData = getStorageItems('USER_INFO_CACHE')
+  
   /**头部选择框 */
   function changeHedercheck() {
     const title = ['音乐馆', '我的音乐', '客户端', '开放平台', 'VIP'];
@@ -74,7 +79,6 @@ const Header = memo(() => {
       '/broadcastingstation',
       '/mv',
       '/digitalalbum',
-      
     ];
 
     /**切换修改index */
@@ -133,7 +137,8 @@ const Header = memo(() => {
   const handellogout = () => {
     setLogin(false);
     setloginmore(false);
-    dispatch(Logout())
+    dispatch(Logout());
+    clearStorageAll()
   };
   return (
     <HeaderDIv>
@@ -151,7 +156,7 @@ const Header = memo(() => {
             />
           </div>
           <ul className="login">
-            {isLogin ? (
+            {userData ? (
               <img
                 src={require('@/asstes/img/header/header.jpg')}
                 onMouseEnter={onMouseEnter}
@@ -173,7 +178,7 @@ const Header = memo(() => {
                       borderRadius: ' 50%',
                     }}
                   />
-                  <span style={{fontSize: '14px'}}>牛爷爷</span>
+                  <span style={{fontSize: '14px'}}>{userInfo.name}</span>
                 </div>
                 <div style={{flex: '4'}}>
                   <div style={{display: 'flex', padding: '0 20px'}}>

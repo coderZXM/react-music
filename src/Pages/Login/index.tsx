@@ -1,10 +1,15 @@
-import React, {memo, useEffect, useState} from 'react';
-import {Button, Form, Input, Modal} from 'antd';
+import React, {memo, useEffect, useRef, useState} from 'react';
+import {Button, Col, Form, Input, Modal, Row} from 'antd';
 import {LoginDiv} from './styled';
 import {PHONE} from './constant';
+import {setStorageItems} from '../../utils/storageTool';
 import {apiLoginInfo} from '../../services/Login';
 import {useDispatch, useSelector} from 'react-redux';
-import {infoLogin} from '../../store/reducer/homeSlice'
+import {infoLogin, apiuserInfo} from '../../store/reducer/homeSlice';
+import requests from '../../services/request';
+import {apiVerification} from '../../services/Login';
+import axios from 'axios';
+import {useLocalStorageState} from 'ahooks';
 
 interface Props {
   open: boolean; //显示登录
@@ -20,30 +25,64 @@ const Login = memo((props: Props) => {
   /**使用reudex */
   const isLogin = useSelector((state: any) => state.home.isLogin);
   /**导入派发方法 */
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
+  /**存储倒计时数字 */
+  const [count, setcount] = useState<number>(60);
+  /**实时记录倒计时数据 */
+  const timeref = useRef<any>(null);
+  const cutCount = () => {
+    setcount(pre => pre - 1);
+    // setlike(true);
+  };
+  /**获取Redux内的数据 */
+  const userInfo = useSelector((state: any) => state.home.userInfo);
+
+  function showCode() {
+    if (count === 60) {
+      return <div style={{color: 'white'}}>获取验证码</div>;
+    } else {
+      return <div style={{color: 'white'}}>已发送({count})</div>;
+    }
+  }
   /**点击登录方法 */
   const onFinish = (values: any) => {
     const phone = values.phone;
-    const password = values.password;
-    // apiLoginInfo({phone,password}).then((res)=>{
-    //     console.log(res)
-    // })
-    if (phone == 18531610711 && password == 'zlw1314521') {
+    const captcha = values.captcha;
+    dispatch(apiuserInfo());
+    if (userInfo) {
       onCancel();
-      dispatch(infoLogin())
     }
+    setTimeout(() => {
+      /**存储token */
+      if (userInfo.token) {
+        setStorageItems('USER_INFO_CACHE', userInfo.token);
+      }
+    });
   };
 
-  /**周期回调 */
-  // useEffect(()=>{
-  //   hanledLogin(isLogin)
+  /**获取验证码 */
+  const phone = form.getFieldValue('phone');
+  const getVerification = () => {
+    cutCount();
+    timeref.current = setInterval(cutCount, 1000);
+    // let phone = form.getFieldValue('phone')
+    //apiVerification(phone)
+  };
+  /**周期回调-记录倒计时 */
+  useEffect(() => {
+    if (count === 0) {
+      setcount(60);
+      clearInterval(timeref.current);
+    }
+  }, [count]);
 
-  // },[isLogin])
+  /**周期回调 */
+  useEffect(() => {}, []);
 
   return (
     <Modal
       title="账号登录"
-      destroyOnClose= {true}
+      destroyOnClose={true}
       centered
       open={open}
       footer={[]}
@@ -51,7 +90,6 @@ const Login = memo((props: Props) => {
       onCancel={() => {
         onCancel();
         form.resetFields();
-
       }}
       maskClosable={false}
       width={600}
@@ -60,7 +98,7 @@ const Login = memo((props: Props) => {
     >
       <Form form={form} onFinish={onFinish}>
         <LoginDiv className="LoginDiv">
-          <div className="Title">密码登录</div>
+          <div className="Title">验证码登录</div>
           <div>
             推荐使用<a>快捷登录</a>，防止盗号。
           </div>
@@ -79,17 +117,25 @@ const Login = memo((props: Props) => {
               }}
             />
           </Form.Item>
-          <Form.Item
-            name="password"
-            className="password"
-            rules={[{required: true, message: '密码不能为空'}]}>
-            <Input.Password
-              placeholder="请输入密码"
-              onChange={e => {
-                form.setFieldValue('password', e.target.value.trim());
-              }}
-            />
-          </Form.Item>
+          <Row>
+            <Col>
+              <Form.Item
+                className="captcha"
+                name="captcha"
+                rules={[{required: true, message: '短信验证码不能为空'}]}>
+                <Input placeholder="输入验证码" maxLength={4}></Input>
+              </Form.Item>
+            </Col>
+            <Col>
+              <Button
+                className="verification"
+                onClick={getVerification}
+                disabled={count === 60 ? false : true}>
+                {showCode()}
+              </Button>
+            </Col>
+          </Row>
+
           <Button className="login" htmlType="submit">
             登录
           </Button>

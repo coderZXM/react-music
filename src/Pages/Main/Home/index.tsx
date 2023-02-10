@@ -5,6 +5,7 @@ import {apiRecommendedplaylist} from '../../../services/home';
 import {useMount} from 'ahooks';
 import {getCount} from '../../../utils/format-utils';
 import ZkNavigation from '../../../components/ZkNavigation';
+import ZkShowMusic from '../../../components/ZkShowMusic';
 /**首页 */
 
 const contentStyle: React.CSSProperties = {
@@ -76,6 +77,7 @@ const Home = memo(() => {
         };
         return (
           <CutDiv
+            key={index}
             style={{height: '284px', width: '233px'}}
             className="remocder">
             <div className="imgI" style={{width: '224px', height: '224px'}}>
@@ -116,14 +118,16 @@ const Home = memo(() => {
           border: '1px solid #c9c9c9',
           position: 'absolute',
           left: '350px',
-          cursor:'pointer',
+          cursor: 'pointer',
         }}>
         <i
           style={{
             width: ' 13px',
             height: '16px',
             backgroundPosition: ' -60px -220px',
-          }}>{'>'}</i>
+          }}>
+          {'>'}
+        </i>
         播放全部
       </div>
     );
@@ -149,6 +153,19 @@ const Home = memo(() => {
       <Contentdiv>
         <h2>新 歌 首 发 </h2>
         <ZkNavigation data={Navdata} Leftsolt={PlayAll} />
+        <Carousel afterChange={onChange}>
+          <div style={{display: 'flex',flexWrap:'wrap'}}>
+            <ZkShowMusic/>
+            <ZkShowMusic/>
+            <ZkShowMusic/>
+            <ZkShowMusic/>
+            <ZkShowMusic/>
+            <ZkShowMusic/>
+            <ZkShowMusic/>
+            <ZkShowMusic/>
+            <ZkShowMusic/>
+          </div>
+        </Carousel>
       </Contentdiv>
     </>
   );

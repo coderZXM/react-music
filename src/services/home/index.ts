@@ -11,3 +11,13 @@ export function apiRecommendedplaylist(limit:number){
         }
     })
 }
+/**获取原创歌曲排行榜 */
+export function apiNewestSong (id:number){
+    return requests({
+        url:'/playlist/detail',
+        method:'GET',
+        params:{
+            id,
+        }
+    })
+}
